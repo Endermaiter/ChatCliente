@@ -1,8 +1,6 @@
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -69,13 +67,15 @@ public class Cliente extends JFrame {
 
         //Instancia del objeto de salida
         OutputStream os = socketCliente.getOutputStream();
+        DataOutputStream daOu = new DataOutputStream(os);
         System.out.println("¡¡Conexión aceptada!!\n");
 
         //Condicionante que determina si quiero enviar un dato al servidor o cerrarlo
 
         //Enviando datos
         System.out.println("Enviando datos...\n");
-        os.write(mensaje.getBytes());
+        //os.write(longitudCadea);
+        daOu.writeUTF(mensaje);
         System.out.println("¡¡Datos enviados!!\n");
 
         //Cerrando socket del cliente (port:5555)
@@ -92,13 +92,11 @@ public class Cliente extends JFrame {
 
         //Instanciamos el objeto de entrada
         InputStream is = newSocketRecibir.getInputStream();
-
+        DataInputStream daIn = new DataInputStream(is);
         //Metemos el dato recibido en una variable
-        byte[] arrayDatoDevuelto = new byte[100];
-        is.read(arrayDatoDevuelto);
-        String datoDevuelto = new String(arrayDatoDevuelto);
-        System.out.println(datoDevuelto);
-        textArea.setText(textArea.getText() + "\n"+ datoDevuelto);
+        String mensajeDev = daIn.readUTF();
+        System.out.println(mensajeDev);
+        textArea.setText(textArea.getText() + "\n"+ mensajeDev);
 
         //diferentes mensajes en funcion de la opcion escogida por el cliente
 
