@@ -45,7 +45,7 @@ public class Cliente extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new Cliente();
-            frame.setSize(400, 300);
+            frame.setSize(500, 450);
             frame.setVisible(true);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setLocationRelativeTo(null);
@@ -112,9 +112,7 @@ public class Cliente extends JFrame {
         //Metemos el dato recibido en una variable
         String mensajeDev = daIn.readUTF();
         System.out.println(mensajeDev);
-        textArea.setText(textArea.getText() + "> " +mensajeDev + "\n");
-
-        //diferentes mensajes en funcion de la opcion escogida por el cliente
+        textArea.setText(textArea.getText() + "[SERVER]> " +mensajeDev + "\n");
 
         //Una vez mostrado el dato junto al mensaje, ceramos los sockets
         socketCliente.close();
