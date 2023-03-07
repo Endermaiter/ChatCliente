@@ -1,4 +1,6 @@
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -9,17 +11,18 @@ import static java.awt.event.KeyEvent.VK_ENTER;
 
 public class Cliente extends JFrame {
 
-    private  JTextField textField;
-    private  JButton buttonSend;
-    private  JTextArea textArea;
+    private JTextField textField;
+    private JButton buttonSend;
+    private JTextArea textArea;
     private JPanel jPanel;
+    private JButton cerrarClienteYServidorButton;
 
     public Cliente() {
         super("CHAT - CLIENTE");
         setContentPane(jPanel);
         buttonSend.addActionListener(e -> {
             try {
-                actionEvent();
+                actionEvent(1);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -28,6 +31,13 @@ public class Cliente extends JFrame {
             @Override
             public void keyPressed(java.awt.event.KeyEvent e) {
                 if (e.getExtendedKeyCode() == VK_ENTER) buttonSend.doClick();
+            }
+        });
+        cerrarClienteYServidorButton.addActionListener(e -> {
+            try {
+                actionEvent(0);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
         });
     }
@@ -42,7 +52,8 @@ public class Cliente extends JFrame {
         });
     }
 
-    public void actionEvent() throws IOException {
+    public void actionEvent(int exit) throws IOException {
+
         //Creamos un nuevo socket (DEVOLUCION)
         ServerSocket clienteSocketDev = new ServerSocket();
         //Asignamos ip y puerto al socket para recibir los datos del servidor
@@ -72,15 +83,20 @@ public class Cliente extends JFrame {
 
         //Condicionante que determina si quiero enviar un dato al servidor o cerrarlo
 
-        //Enviando datos
-        System.out.println("Enviando datos...\n");
-        //os.write(longitudCadea);
-        daOu.writeUTF(mensaje);
-        System.out.println("¡¡Datos enviados!!\n");
+        if (exit == 1) {
+
+            //Enviando datos
+            System.out.println("Enviando datos...\n");
+            daOu.writeUTF(mensaje);
+            System.out.println("¡¡Datos enviados!!\n");
+
+        } else {
+            daOu.writeUTF("Exit");
+            System.exit(0);
+        }
 
         //Cerrando socket del cliente (port:5555)
         socketCliente.close();
-
 
         //**DEVOLUCION DEL DATO**
 
@@ -96,7 +112,7 @@ public class Cliente extends JFrame {
         //Metemos el dato recibido en una variable
         String mensajeDev = daIn.readUTF();
         System.out.println(mensajeDev);
-        textArea.setText(textArea.getText() + "\n"+ mensajeDev);
+        textArea.setText(textArea.getText() + "> " +mensajeDev + "\n");
 
         //diferentes mensajes en funcion de la opcion escogida por el cliente
 
