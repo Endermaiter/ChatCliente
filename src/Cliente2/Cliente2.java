@@ -1,6 +1,6 @@
+package Cliente2;
+
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -9,7 +9,7 @@ import java.net.Socket;
 
 import static java.awt.event.KeyEvent.VK_ENTER;
 
-public class Cliente extends JFrame {
+public class Cliente2 extends JFrame {
 
     private JTextField textField;
     private JButton buttonSend;
@@ -17,8 +17,8 @@ public class Cliente extends JFrame {
     private JPanel jPanel;
     private JButton cerrarClienteYServidorButton;
 
-    public Cliente() {
-        super("CHAT - CLIENTE");
+    public Cliente2() {
+        super("CHAT - CLIENTE 2");
         setContentPane(jPanel);
         buttonSend.addActionListener(e -> {
             try {
@@ -44,7 +44,7 @@ public class Cliente extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            JFrame frame = new Cliente();
+            JFrame frame = new Cliente2();
             frame.setSize(610, 500);
             frame.setVisible(true);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
