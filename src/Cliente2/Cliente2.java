@@ -11,15 +11,18 @@ import static java.awt.event.KeyEvent.VK_ENTER;
 
 public class Cliente2 extends JFrame {
 
+    //Variables referentes a los componentes
     private JTextField textField;
     private JButton buttonSend;
     private JTextArea textArea;
     private JPanel jPanel;
     private JButton cerrarClienteYServidorButton;
 
+    //Constructor de la interfaz
     public Cliente2() {
         super("CHAT - CLIENTE 2");
         setContentPane(jPanel);
+        //Evento del boton de enviar el dato
         buttonSend.addActionListener(e -> {
             try {
                 actionEvent(1);
@@ -27,12 +30,14 @@ public class Cliente2 extends JFrame {
                 throw new RuntimeException(ex);
             }
         });
+        //KeyEvent que permite mandar el mensaje con la tecla Enter tambien(comodidad)
         textField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(java.awt.event.KeyEvent e) {
                 if (e.getExtendedKeyCode() == VK_ENTER) buttonSend.doClick();
             }
         });
+        //Boton para cerrar ambos programas
         cerrarClienteYServidorButton.addActionListener(e -> {
             try {
                 actionEvent(0);
@@ -43,6 +48,7 @@ public class Cliente2 extends JFrame {
     }
 
     public static void main(String[] args) {
+        //Estructuracion de la interfaz
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new Cliente2();
             frame.setSize(610, 500);
@@ -54,19 +60,21 @@ public class Cliente2 extends JFrame {
 
     public void actionEvent(int exit) throws IOException {
 
-        //Creamos un nuevo socket (DEVOLUCION)
+        //**RECIBIR MENSAJE**
+
+        //Creamos un nuevo socket
         ServerSocket clienteSocketDev = new ServerSocket();
         //Asignamos ip y puerto al socket para recibir los datos del servidor
         InetSocketAddress addr = new InetSocketAddress("localhost", 6666);
+        //Realizamos el bind
         clienteSocketDev.bind(addr);
 
-        //**ENVIAR DATO**
+        //**ENVIAR MENSAJE**
 
-        //Recogida de dato en variable
+        //Recogida de mensaje en variable
         String mensaje = textField.getText();
+        //Limpieza del campo de texto
         textField.setText("");
-        //Recogida del temaño del dato en variable
-        int longitudCadea = mensaje.length();
 
         //Creando socket de cliente
         Socket socketCliente = new Socket();
@@ -78,19 +86,21 @@ public class Cliente2 extends JFrame {
 
         //Instancia del objeto de salida
         OutputStream os = socketCliente.getOutputStream();
+        //Instanciamos un DataOutputStream para facilitar la escritura
         DataOutputStream daOu = new DataOutputStream(os);
         System.out.println("¡¡Conexión aceptada!!\n");
 
-        //Condicionante que determina si quiero enviar un dato al servidor o cerrarlo
+        //Condicionante que determina si quiero enviar un mensaje al servidor o cerrarlo
 
         if (exit == 1) {
 
-            //Enviando datos
+            //Enviando mensaje
             System.out.println("Enviando datos...\n");
             daOu.writeUTF(mensaje);
             System.out.println("¡¡Datos enviados!!\n");
 
         } else {
+            //Enviando mensaje de que se cierre
             daOu.writeUTF("Exit");
             System.exit(0);
         }
@@ -98,7 +108,7 @@ public class Cliente2 extends JFrame {
         //Cerrando socket del cliente (port:5555)
         socketCliente.close();
 
-        //**DEVOLUCION DEL DATO**
+        //**RECIBIR MENSAJE**
 
         //Esperamos a que llegue la conexion y la acepte
         System.out.println("Esperando respuesta del servidor...\n");
@@ -108,12 +118,14 @@ public class Cliente2 extends JFrame {
 
         //Instanciamos el objeto de entrada
         InputStream is = newSocketRecibir.getInputStream();
+        //Instanciamos un DataInputStream para facilitar la lectura
         DataInputStream daIn = new DataInputStream(is);
-        //Metemos el dato recibido en una variable
+        //Metemos el mensaje recibido en una variable
         String mensajeDev = daIn.readUTF();
-        textArea.setText(textArea.getText() + "[SERVER]> " +mensajeDev + "\n");
+        //Lo mostramos al cliente
+        textArea.setText(textArea.getText() + "[SERVER]> " + mensajeDev + "\n");
 
-        //Una vez mostrado el dato junto al mensaje, ceramos los sockets
+        //Una vez mostrado el mensaje, cerramos los sockets
         socketCliente.close();
         clienteSocketDev.close();
     }
